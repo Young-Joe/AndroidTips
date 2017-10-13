@@ -111,3 +111,16 @@ Msg:1 线程 : handlerThread
 
 
 
+##### 权限
+
+```java
+权限验证
+ContextCompat.checkSelfPermission(context, Manifest.permission.XXX) != PackageManager.PERMISSION_GRANTED
+
+权限申请
+ActivityCompat.requsetPermissions(context, permissions, 1);
+
+权限请求结果
+void onRequestPermissionsResult(int requestCode; Array permissions; intArray grantResults){};
+```
+
