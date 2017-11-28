@@ -163,3 +163,13 @@ RandomAccessFile即可读取文件内容,也可以向文件输出数据.同时,R
 ##### getApplication和getApplicationContext
 
 Application本身就是一个Context，所以这里获取getApplicationContext()得到的结果就是Application本身的实例。那么问题来了，既然这两个方法得到的结果都是相同的，那么Android为什么要提供两个功能重复的方法呢？实际上这两个方法在作用域上有比较大的区别。getApplication()方法的语义性非常强，一看就知道是用来获取Application实例的，**但是这个方法只有在Activity和Service中才能调用的到**。那么也许在绝大多数情况下我们都是在Activity或者Service中使用Application的，但是如果在一些其它的场景，比如BroadcastReceiver中也想获得Application的实例，这时就可以借助getApplicationContext()方法了。
+
+
+
+##### RxJava2
+
+subscribeOn的调用切换之前的线程.
+
+observeOn的调用切换之后的线程.
+
+observeOn之后,不可再调用subscribeOn切换线程

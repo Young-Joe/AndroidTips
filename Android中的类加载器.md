@@ -1,0 +1,23 @@
+## Android中的类加载器
+
+基于jvm的java应用是通过ClassLoader来加载应用中的class的,而Android使用的是dalvik/art,且class文件会被打包进一个dex文件中,底层虚拟机不同,那么它们的类加载器也不同.在Android中,要加载dex文件中的class文件就需要用PathClassLoader或DexClassLoader这两个Android专用的类加载器.
+
+- PathClassLoader与DexClassLoader都继承于BaseDexClassLoader.
+- PathClassLoader与DexClassLoader都调用了父类的构造函数,但DexClassLoader多传了一个optimizedDirectory.
+- PathClassLoader:只能加载已经安装到Android系统中的APK文件(/data/app目录),是Android默认使用的类加载器.
+- DexClassLoader:可以加载任意目录下的dex/jar/apk/zip文件,比PathClassLoader更灵活,是实现热修复的重点.
+
+![](http://mmbiz.qpic.cn/mmbiz_png/CvQa8Yf8vq1bx8VextvLyA0FwntMh0dDePUcG8sKLyEkRqibPZoZBUJpkspg6eL96D53URfOLaQib2fPVIG8yuOQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1)
+
+##### 获取class
+
+类加载器会提供一个方法来供外界找到它所加载的class,该方法就是findCLass().
+
+BaseDexClassLoader已重写该方法.
+
+在findClass方法中通过创建DexPathList对象,并调用其findClass()方法来获取class的.
+
+![img](http://mmbiz.qpic.cn/mmbiz_png/CvQa8Yf8vq1bx8VextvLyA0FwntMh0dD4ibUMs6eW9aKVWynh5oKgAsbPO1H9tt1KRWHfTycvxM5m6S8JCsFbiag/640?wx_fmt=png&wxfrom=5&wx_lazy=1)
+
+
+
