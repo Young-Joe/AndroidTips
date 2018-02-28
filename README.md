@@ -168,8 +168,27 @@ Application本身就是一个Context，所以这里获取getApplicationContext()
 
 ##### RxJava2
 
-subscribeOn的调用切换之前的线程.
+- 尽量多用 observeOn()
+- 保证整个流里只有一个 subscribeOn(),放在越前面越好
+- subscribeOn的调用切换之前的线程(**上面** 执行代码的线程 )
+- observeOn的调用切换之后的线程(  **下面** 的代码执行的线程 )
+- observeOn之后,不可再调用subscribeOn切换线程
 
-observeOn的调用切换之后的线程.
 
-observeOn之后,不可再调用subscribeOn切换线程
+
+```
+        try {
+            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+            mAlert.setAccessible(true);
+            Object mAlertController = mAlert.get(dialog);
+            Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+            mMessage.setAccessible(true);
+            TextView mMessageView = (TextView) mMessage.get(mAlertController);
+            mMessageView.setTextColor(Color.BLUE);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+```
+
