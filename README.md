@@ -192,3 +192,54 @@ Application本身就是一个Context，所以这里获取getApplicationContext()
         }
 ```
 
+
+
+##### 触发onSaveInstanceState几种情况
+
+1. 按下HOME键时
+
+2. 长按HOME键选择其他程序时
+
+3. 按下电源键/关闭屏幕时
+
+4. 从activity A启动一个新的activity时
+
+5. 屏幕方向切换时
+
+   onSaveInstance和onRestoreInstanceState不一定是成对被调用的.onRestoreInstanceState被调用的前提是,activity A被系统销毁了,但当用户按下HOME键又马上返回activity A(即activity A并没有因为内存原因被系统销毁),此时onRestoreInstanceState不会被调用
+
+![Fragment生命周期和Activity关系](https://raw.githubusercontent.com/francistao/LearningNotes/master/Part1/Android/FlowchartDiagram.jpg)
+
+##### Service不被杀死的几种策略
+
+- 在onStartCommand中返回START_STICKY
+
+  kill后会被重启(等待5S左右),重传intent,保持与重启前一样
+
+- 提升service优先级
+
+  在Manifest中设置android:priority = "1000"这个属性值(国内Rom可能无效)
+
+- 提升service进程优先级
+
+  使用startForeground()将service放到前台状态
+
+- onDestory中重启service
+
+- 监听系统广播判断service状态
+
+  通过监听一些系统广播,例如:开机,界面唤醒,应用状态改变等监听,然后判断是否需要激活service
+
+- 在JNI层,用C代码fork一个进程出来
+
+  这样产生的进程被系统认为是两个不同的进程.但Android5.0之后可能不行
+
+- root之后放到system/app变成系统级应用
+
+- 放一个像素在前台(手机扣扣)
+
+
+
+**Retrofit非常巧妙的用注解来描述一个HTTP请求，将一个HTTP请求抽象成一个Java接口，然后用了Java动态代理的方式，动态的将这个接口的注解“翻译”成一个HTTP请求，最后再执行这个HTTP请求**
+
+Retrofit的功能非常多的依赖Java反射，代码中其实还有很多细节，比如异常的捕获、抛出和处理，大量的Factory设计模式

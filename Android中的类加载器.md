@@ -21,3 +21,10 @@ BaseDexClassLoader已重写该方法.
 
 
 
+`@Retention` 保留时间：有三类值可以选择，`SOURCE`  `RUNTIME` `CLASS`。
+
+`SOURCE` 源码时保留：使用此类的注解多为标记注解，比如 `@Override`、`@Deprecated`、`@SuppressWarnings` 等。
+
+`RUNTIME` 运行时保留：程序在运行过程中，使用这些 Annotation, 比如我们常用的 `@Test`。
+
+`CLASS` 编译时保留：Java 文件在编译时由 apt 自动解析，需要自定义类继承自 AbstractProcessor 并重写 Process 函数。比如 ButterKnife 中使用的  `@BindView`, `@OnClick` 等就是声明为 CLASS 的。
