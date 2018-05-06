@@ -28,3 +28,12 @@ BaseDexClassLoader已重写该方法.
 `RUNTIME` 运行时保留：程序在运行过程中，使用这些 Annotation, 比如我们常用的 `@Test`。
 
 `CLASS` 编译时保留：Java 文件在编译时由 apt 自动解析，需要自定义类继承自 AbstractProcessor 并重写 Process 函数。比如 ButterKnife 中使用的  `@BindView`, `@OnClick` 等就是声明为 CLASS 的。
+
+运行时注解
+通常被定义的注解需要通过反射来获取相关值
+编译时注解
+在代码构建编译过程的时候,生成java文件然后供需要的类进行调用
+
+两者根本区别在于,前者是程序员预先写好的java文件中,直接调用的,
+而后者是程序员写好java代码的生成规则,程序员自己不写java文件,
+交给编译器去写java文件,,java文件只有编译器编译完成后才能调用.
