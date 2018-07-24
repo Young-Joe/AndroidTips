@@ -243,3 +243,12 @@ Application本身就是一个Context，所以这里获取getApplicationContext()
 **Retrofit非常巧妙的用注解来描述一个HTTP请求，将一个HTTP请求抽象成一个Java接口，然后用了Java动态代理的方式，动态的将这个接口的注解“翻译”成一个HTTP请求，最后再执行这个HTTP请求**
 
 Retrofit的功能非常多的依赖Java反射，代码中其实还有很多细节，比如异常的捕获、抛出和处理，大量的Factory设计模式
+
+##### HashMap和Hashtable区别？
+
+1. HashMap支持null Key和null Value；Hashtable不允许。这是因为HashMap对null进行了特殊处理，将null的hashCode值定为了0，从而将其存放在哈希表的第0个bucket。
+2. HashMap是非线程安全，HashMap实现线程安全方法为Map map = Collections.synchronziedMap(new HashMap())；Hashtable是线程安全
+3. HashMap默认长度是16，扩容是原先的2倍；Hashtable默认长度是11，扩容是原先的2n+1
+4. HashMap继承AbstractMap；Hashtable继承了Dictionary
+
+![D85B2D59-0385-41C2-9C4E-304E48E51205](https://i.loli.net/2018/06/29/5b3587d305447.png)
