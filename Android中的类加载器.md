@@ -37,3 +37,7 @@ BaseDexClassLoader已重写该方法.
 两者根本区别在于,前者是程序员预先写好的java文件中,直接调用的,
 而后者是程序员写好java代码的生成规则,程序员自己不写java文件,
 交给编译器去写java文件,,java文件只有编译器编译完成后才能调用.
+
+
+
+![](https://upload-images.jianshu.io/upload_images/5494434-7595d360becab148?imageMogr2/auto-orient/strip%7CimageView2/2/w/814)
