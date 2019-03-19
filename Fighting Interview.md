@@ -11,7 +11,7 @@ startActivity最终会调用startActivityForResult,通过ActivityManagerProxy调
 #####requestLayout，invalidate，postInvalidate区别与联系
 
 相同点：三个方法都有刷新界面的效果。
-不同点：invalidate和postInvalidate只会调用onDraw()方法；requestLayout则会重新调用onMeasure、onLayout、onDraw。
+不同点：invalidate和postInvalidate只会调用onDraw()方法；requestLayout则会重新调用onMeasure、onLayout、不一定会调用onDraw。一般说来需要重新布局就调用requestLayout()方法，需要重新绘制就调用invalidate()方法。
 
 ### Binder机制，共享内存实现原理
 
@@ -75,32 +75,29 @@ RecyclerView的扩展性更强大（LayoutManager、ItemDecoration等）。
 
 1. 标记-清除算法（Mark-Sweep）
    在标记阶段，确定所有要回收的对象，并做标记。清除阶段紧随标记阶段，将标记阶段确定不可用的对象清除。标记—清除算法是基础的收集算法，有两个不足：1）标记和清除阶段的效率不高；2）清除后回产生大量的不连续空间，这样当程序需要分配大内存对象时，可能无法找到足够的连续空间。
+
 2. 复制算法（Copying）
    复制算法是把内存分成大小相等的两块，每次使用其中一块，当垃圾回收的时候，把存活的对象复制到另一块上，然后把这块内存整个清理掉。复制算法实现简单，运行效率高，但是由于每次只能使用其中的一半，造成内存的利用率不高。现在的JVM 用复制方法收集新生代，由于新生代中大部分对象（98%）都是朝生夕死的，所以会分成1块大内存Eden和两块小内存Survivor(大概是8:1:1)，每次使用1块大内存和1块小内存，当回收时将2块内存中存活的对象赋值到另一块小内存中，然后清理剩下的。
+
 3. 标记—整理算法（Mark-Compact）
    标记—整理算法和复制算法一样，但是标记—整理算法不是把存活对象复制到另一块内存，而是把存活对象往内存的一端移动，然后直接回收边界以外的内存。标记—整理算法提高了内存的利用率，并且它适合在收集对象存活时间较长的老年代。
+
 4. 分代收集（Generational Collection）
    分代收集是根据对象的存活时间把内存分为新生代和老年代，根据各代对象的存活特点，每个代采用不同的垃圾回收算法。新生代采用复制算法，老年代采用标记—整理算法。
 
- 
+   Java垃圾回收机制最基本的做法是分代回收。内存中的区域被划分成不同的世代，对象根据其存活的时间被保存在对应世代的区域中。一般的实现是划分成3个世代：年轻、年老和永久。内存的分配是发生在年轻世代中的。当一个对象存活时间足够长的时候，它就会被复制到年老世代中。对于不同的世代可以使用不同的垃圾回收算法。进行世代划分的出发点是对应用中对象存活时间进行研究之后得出的统计规律。一般来说，一个应用中的大部分对象的存活时间都很短。比如局部变量的存活时间就只在方法的执行过程中。基于这一点，对于年轻世代的垃圾回收算法就可以很有针对性。
 
- 
+##### HashMap的实现原理
 
- 
+- HashMap概述：HashMap是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用null值和null键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。
+- HashMap的数据结构：在java编程语言中，最基本的结构就是两种，一个是数组，另外一个是模拟指针（引用），所有的数据结构都可以用这两个基本结构来构造的，HashMap也不例外。HashMap实际上是一个“链表散列”的数据结构，即数组和链表的结合体。
+- HashMap底层就是一个数组结构，数组中的每一项又是一个链表。当新建一个HashMap的时候，就会初始化一个数组。
 
- 
+​       [容量/负载因子/put/get](https://github.com/LRH1993/android_interview/blob/master/java/basis/hashmap.md)
 
- 
+ [线程池执行流程](https://github.com/LRH1993/android_interview/blob/master/java/concurrence/thread-pool.md)
 
- 
-
- 
-
- 
-
- 
-
- 
+ [Activity就像个控制器，不负责视图部分。Window像个承载器，装着内部视图。DecorView就是个顶层视图，是所有View的最外层布局。ViewRoot像个连接器，负责沟通，通过硬件的感知来通知视图，进行用户之间的交互。](https://github.com/LRH1993/android_interview/blob/master/android/basis/decorview.md)
 
  
 
