@@ -99,16 +99,27 @@ RecyclerView的扩展性更强大（LayoutManager、ItemDecoration等）。
 
  [Activity就像个控制器，不负责视图部分。Window像个承载器，装着内部视图。DecorView就是个顶层视图，是所有View的最外层布局。ViewRoot像个连接器，负责沟通，通过硬件的感知来通知视图，进行用户之间的交互。](https://github.com/LRH1993/android_interview/blob/master/android/basis/decorview.md)
 
- 
+##### dp.dip.sp
 
- 
+dp:是像素密度 dip:设备无关像素,(后来为了与sp统一使用了dp).sp:与缩放无关的抽象像素
 
- 
+#####[LinearLayout.FrameLayout.RelativeLayout性能对比,为什么](https://blog.csdn.net/hejjunlin/article/details/51159419)
 
- 
+- 表现层：用Espresso 2和Android Instrumentation测试框架测试UI。
+- 领域层：JUnit + Mockito —— 它是Java的标准模块。
+- 数据层：将测试组合换成了Robolectric 3 + JUnit + Mockito
 
- 
+##### SP的commit()和apply()的异同
 
- 
+commit是直接同步的提交到磁盘.apply是先写入内存,然后**异步**的写入磁盘.
 
- 
+##### MD5是加密方法么,Base64
+
+MD5是一种哈希算法,(把任意数据转换为定长数据的算法统称).也可以理解为不可逆加密
+
+##### Fragment add和replace的区别
+
+add:覆盖原fragment, 添加入一个新fragment后, 原来的fragment仍然存活
+
+replace:先remove掉相同id的所有fragment，然后在add当前的这个fragment
+

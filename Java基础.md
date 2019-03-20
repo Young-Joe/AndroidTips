@@ -34,3 +34,10 @@ ThreadLocal的作用是提供线程内的局部变量,这种变量在线程的�
 - 4.准备：在堆上为静态变量划分内存
 - 5.解析：将常量池中的符号引用转换为直接引用
 - 6.初始化：初始化静态变量
+
+##### 禁止在foreach循环内进行元素的remove/add 
+
+也称增强for循环.是java提供的一个语法糖.内部依赖了while循环和Iterator.
+
+早foreach中进行remove/add会抛出fail-fast.快速失败(`java集合的一种错误检测机制`).集合遍历通过iterator进行,但是元素的remove/add却是直接使用的集合类自己的方法,这就导致iterator在遍历的时候会发现一个元素在自己不知不觉的情况下就被删除/添加了,就会抛出fail-fast.
+
