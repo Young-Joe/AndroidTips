@@ -55,6 +55,12 @@ Binder是基于C/S架构的，其中定义了4个角色：Client、Server、Bind
 **ServiceManager是一个单独的进程，那么Server与ServiceManager通讯是靠什么呢？**
 当Android系统启动后，会创建一个名称为servicemanager的进程，这个进程通过一个约定的命令BINDERSETCONTEXT_MGR向Binder驱动注册，申请成为为ServiceManager，Binder驱动会自动为ServiceManager创建一个Binder实体。并且这个Binder实体的引用在所有的Client中都为0，也就说各个Client通过这个0号引用就可以和ServiceManager进行通信。Server通过0号引用向ServiceManager进行注册，Client通过0号引用就可以获取到要通信的Server的Binder引用。
 
+> 系统启动时init进程会创建Zygote进程,Zygote通过FORK子进程进行其他进程的创建和启动
+>
+> Zygote进程创建的第一个是SystemServer(负责启动系统的关键服务,如PackageManagerService.ActivityManagerService).
+>
+> 当需要启动一个应用时,AMS会通过socket进程间通信机制,通知Zygote进程.
+
 ##### RecyclerView与ListView(缓存原理，区别联系，优缺点)
 
 **缓存区别：**
@@ -87,6 +93,24 @@ RecyclerView的扩展性更强大（LayoutManager、ItemDecoration等）。
 
    Java垃圾回收机制最基本的做法是分代回收。内存中的区域被划分成不同的世代，对象根据其存活的时间被保存在对应世代的区域中。一般的实现是划分成3个世代：年轻、年老和永久。内存的分配是发生在年轻世代中的。当一个对象存活时间足够长的时候，它就会被复制到年老世代中。对于不同的世代可以使用不同的垃圾回收算法。进行世代划分的出发点是对应用中对象存活时间进行研究之后得出的统计规律。一般来说，一个应用中的大部分对象的存活时间都很短。比如局部变量的存活时间就只在方法的执行过程中。基于这一点，对于年轻世代的垃圾回收算法就可以很有针对性。
 
+   > 新生代:minor gc 代用标记整理算法
+   >
+   > 老年代:major gc 或full gc. System.gc()强制执行的就是full gc
+
+##### Dalvik VM和JVM的差异
+
+- JVM运行的是java字节码.Dalvik运行的是dex文件
+
+- **jvm:基于栈.**java类会被编译成一个或多个字节码文件(.class)然后打包到jar.然后再从相应的class文件中获取相应的字节码.
+
+  **Dalvik基于寄存器**则是在编译成class文件后,通过dx将所有的class文件转换成dex文件(减少整体的文件尺寸和I/O操作,提高了类查找)
+
+##### Dalvik和ART的差异
+
+Dalvik:在第一次加载后会生成cache文件,以提供下次快速加载,所以第一次很慢.
+
+ART:在安装应用的时候会进行一次预编译,在安装应用时会将代码转换成**机器码**存储在本地(dex2oat),这样在运行时就不需每次都进行一次编译了.
+
 ##### HashMap的实现原理
 
 - HashMap概述：HashMap是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用null值和null键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。
@@ -94,6 +118,10 @@ RecyclerView的扩展性更强大（LayoutManager、ItemDecoration等）。
 - HashMap底层就是一个数组结构，数组中的每一项又是一个链表。当新建一个HashMap的时候，就会初始化一个数组。
 
 ​       [容量/负载因子/put/get](https://github.com/LRH1993/android_interview/blob/master/java/basis/hashmap.md)
+
+- hashmap是否线程安全?不安全会出什么问题?
+
+  HashMap在put的时候，插入的元素超过了容量（由负载因子决定）的范围就会触发扩容操作，就是rehash，这个会重新将原数组的内容重新hash到新的扩容数组中，在多线程的环境下，存在同时其他的元素也在进行put操作，如果hash值相同，可能出现同时在同一数组下用链表表示，造成闭环，导致在get时会出现死循环，所以HashMap是线程不安全的。
 
  [线程池执行流程](https://github.com/LRH1993/android_interview/blob/master/java/concurrence/thread-pool.md)
 
@@ -123,3 +151,54 @@ add:覆盖原fragment, 添加入一个新fragment后, 原来的fragment仍然存
 
 replace:先remove掉相同id的所有fragment，然后在add当前的这个fragment
 
+##### **Fragment的启动栈和回退栈**
+
+加入回退栈:addToBackStack(null)   弹出回退栈:popBackStack()
+
+[**热修复技术**](https://www.cnblogs.com/popfisher/p/8543973.html)
+
+**对于 Animation 动画:**
+
+他的实现机制是,在每次进行绘图的时候,通过对整块画布的矩阵进行变换,从而实现一种视图坐标的移动,但实际上其在 View 内部真实的坐标位置及其他相关属性始终恒定.
+
+**对于 Animator 动画:**
+
+Animator 动画的实现机制说起来其实更加简单一点,因为他其实只是计算动画开启之后,结束之前,到某个时间点得时候,某个属性应该有的值,然后通过回调接口去设置具体值,其实 Animator 内部并没有针对某个 view 进行刷新,来实现动画的行为,动画的实现是在设置具体值的时候,方法内部自行调取的类似 invalidate 之类的方法实现的.也就是说,使用 Animator ,内部的属性发生了变化.
+
+- 补间动画click事件还在原位怎么解决?
+
+  如果一个View如果在做补间动画中的平移、旋转、缩放动画，那么它的点击事件一定要进行的矩阵处理。
+
+  在ParentView中重写onTouchEvent(MotionEvent event)，拦截点击点击事件的x、y坐标。
+
+#####[在java中==和equals()的区别](https://blog.csdn.net/lcsy000/article/details/82782864)
+
+[hashcode 和 equals作用](https://www.cnblogs.com/keyi/p/7119825.html)
+
+[Java并发问题--乐观锁与悲观锁以及乐观锁的一种实现方式-CAS](https://www.cnblogs.com/qjjazry/p/6581568.html)
+
+#####导致内存泄露常见原因:
+
+1)静态变量直接或者间接地引用了Activity对象就会造成内存泄露
+
+2)Activity使用了静态的View(View会持有Activity的对象的引用)
+
+3)Activity定义了静态View变量???
+
+4)ImageSpan引用了Activity Context
+
+5)单例中引用了Activity的Context(需要使用Application的Context)
+
+6)对于使用了BraodcastReceiver，ContentObserver，File，Cursor，Stream，Bitmap等资源，应该在Activity销毁时及时关闭或者注销，否则这些资源将不会被回收，从而造成内存泄漏。
+
+7)静态集合保存的对象没有及时消除(不使用的时候置为null)
+
+8)在Java中,非静态(匿名)内部类会引用外部类对象,而静态内部类不会引用外部类对象
+
+9)在Activity中,创建了非静态内部类(内部类直接或者间接引用了Activity)的静态成员变量
+
+10)线程包括AsyncTask的使用,Activity退出后线程还在运行(线程在死循环),并且在线程中使用了Activity或view对象(解决方法:不要直接写死循环,可以设置一个布尔类型的TAG,当activity推出的时候,设置TAG为False)
+
+11)Handler对象的使用,Activity退出后Handler还是有消息需要处理(解决方法:在退出activity之后,移除消息)
+
+12)WebView造成的内存泄漏(在onDestory中销毁)
