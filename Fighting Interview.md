@@ -202,3 +202,6 @@ Animator 动画的实现机制说起来其实更加简单一点,因为他其实�
 11)Handler对象的使用,Activity退出后Handler还是有消息需要处理(解决方法:在退出activity之后,移除消息)
 
 12)WebView造成的内存泄漏(在onDestory中销毁)
+
+[JIT/AOP+解释运行](https://mp.weixin.qq.com/s/q3uxdoENJM_jt7QxuE1IrA)
+
