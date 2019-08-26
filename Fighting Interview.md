@@ -205,3 +205,4 @@ Animator 动画的实现机制说起来其实更加简单一点,因为他其实�
 
 [JIT/AOP+解释运行](https://mp.weixin.qq.com/s/q3uxdoENJM_jt7QxuE1IrA)
 
+[Android APP性能优化的四个方面最全总结](https://blog.csdn.net/zhangbijun1230/article/details/79449725#commentBox)

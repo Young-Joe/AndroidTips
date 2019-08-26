@@ -46,3 +46,11 @@ ThreadLocal的作用是提供线程内的局部变量,这种变量在线程的�
 早foreach中进行remove/add会抛出fail-fast.快速失败(`java集合的一种错误检测机制`).集合遍历通过iterator进行,但是元素的remove/add却是直接使用的集合类自己的方法,这就导致iterator在遍历的时候会发现一个元素在自己不知不觉的情况下就被删除/添加了,就会抛出fail-fast.
 
 static静态块先运行，随后才运行构造方法！运行主方法的话，也是先运行static代码块，再运行主方法。
+
+
+
+1.volatile本质是在告诉jvm当前变量在寄存器（工作内存）中的值是不确定的，需要从主存中读取； synchronized则是锁定当前变量，只有当前线程可以访问该变量，其他线程被阻塞住。
+2.volatile仅能使用在变量级别；synchronized则可以使用在变量、方法、和类级别的
+volatile仅能实现变量的修改可见性，不能保证原子性；而synchronized则可以保证变量的修改可见性和原子性
+3.volatile不会造成线程的阻塞；synchronized可能会造成线程的阻塞。
+4.volatile标记的变量不会被编译器优化；synchronized标记的变量可以被编译器优化
