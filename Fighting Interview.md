@@ -206,3 +206,9 @@ Animator 动画的实现机制说起来其实更加简单一点,因为他其实�
 [JIT/AOP+解释运行](https://mp.weixin.qq.com/s/q3uxdoENJM_jt7QxuE1IrA)
 
 [Android APP性能优化的四个方面最全总结](https://blog.csdn.net/zhangbijun1230/article/details/79449725#commentBox)
+
+##### Serializable Parcelable
+
+Serializable:java api.通过I/O读写存储磁盘的,使用反射来实现.容易触发GC.可以网络传输/本地存储
+
+Parcelable:直接在内存中读写.无法网络传输,无法本地存储
